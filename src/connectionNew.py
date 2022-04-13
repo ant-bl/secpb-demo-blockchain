@@ -1,5 +1,5 @@
-import json
 import os
+
 from multichaincli import Multichain
 
 
@@ -16,16 +16,15 @@ class BlockchainConnect(object):
 
     def start(self):
 
-        if self.password is not None:
-            chainpass = self.password
-        else:
+        chain_pass = self.password
+
+        if chain_pass is None:
             # Load chain pass from ID_PATH
             with open(self.id_path, "r") as fp:
                 for i, line in enumerate(fp):
-                    tokens = lines.strip().split("=")
+                    tokens = line.strip().split("=")
                     if tokens[0] == "rpcpassword":
                         chain_pass = tokens[1]
+                        break
 
-            chainpass = chain_pass[1]
-
-        return Multichain(self.id, chainpass, self.host, self.port, self.name)
+        return Multichain(self.id, chain_pass, self.host, self.port, self.name)
