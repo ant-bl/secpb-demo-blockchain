@@ -78,12 +78,9 @@ def main():
 
     asset_pt.set_asset_params([ASSET_NAME, True, adresses_chain_two[0], QUANTITY])
 
-    try:
-        asset_txid_chain_two = asset_pt.asset_creation(access_chain_two)
-    except JSONRPCException as e:
-        print("Asset existing")
-
+    asset_txid_chain_two = asset_pt.asset_creation(access_chain_two)
     last_height = int(retrieve_saved_block_height())
+    height = 0
 
     while True:
 
