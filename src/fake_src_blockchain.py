@@ -102,9 +102,9 @@ def main():
 
     parser.add_argument("--path", help="path that will used to read the fingerprint. If the paths starts by unix: " +
                                        "the fingerprint will be read through a socket unix", required=True)
-    parser.add_argument("--chainName", help="The name of Blockchain", required=True)
-    parser.add_argument("--chainPort", help="Port used by the Blockchain", required=True)
-    parser.add_argument("--password", help="password", required=True)
+    parser.add_argument("--chain-name", help="The name of Blockchain", required=True)
+    parser.add_argument("--chain-port", help="Port used by the Blockchain", required=True)
+    parser.add_argument("--password", help="password")
     parser.add_argument("--verbose", help="increase output verbosity", action="store_true", default=False)
 
     args = parser.parse_args()
@@ -114,7 +114,7 @@ def main():
     else:
         logging.basicConfig(level=logging.ERROR)
 
-    do_run(args.path, args.chainName, args.chainPort, args.password)
+    do_run(args.path, args.chain_name, args.chain_port, args.password)
 
 
 if __name__ == "__main__":

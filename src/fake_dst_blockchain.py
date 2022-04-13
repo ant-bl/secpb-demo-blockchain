@@ -101,8 +101,8 @@ def main():
     parser = argparse.ArgumentParser("Run a server that accepts fingerprint through unix socket and forward it to " +
                                      "an HTPP server through a POST connection.")
 
-    parser.add_argument("--chainName", help="The name of Blockchain", required=True)
-    parser.add_argument("--chainPort", help="Port used by the Blockchain", required=True)
+    parser.add_argument("--chain-name", help="The name of Blockchain", required=True)
+    parser.add_argument("--chain-port", help="Port used by the Blockchain", required=True)
     parser.add_argument("--socket-path", help="socket path to reach vm dest", required=True)
     parser.add_argument("--template-path", help="template path", required=True)
     parser.add_argument("--polling-time", help="time between two polls in seconds", default=2)
@@ -116,7 +116,7 @@ def main():
         logging.basicConfig(level=logging.ERROR)
 
     print("Starting with the chain One:  \n")
-    pt_chainOne = connect.BlockchainConnect(args.chainPort, args.chainName)
+    pt_chainOne = connect.BlockchainConnect(args.chain_port, args.chain_name)
     access_chainOne = pt_chainOne.start()
     asset_pt = asset.AssetCreate()
     handler = blockhandler.BlockHandler(access_chainOne)
