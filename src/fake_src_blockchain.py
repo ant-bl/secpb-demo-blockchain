@@ -78,7 +78,7 @@ def do_run_unix_server(path: Path):
             server.server_close()
 
 
-def do_run(path: str, uri: str, name:str, port: str):
+def do_run(path: str, name:str, port: str, password: str):
     prefix = "unix:"
 
     if path.startswith(prefix):
@@ -93,7 +93,7 @@ def do_run(path: str, uri: str, name:str, port: str):
 
         logging.info(f"get fingerprint : {fingerprint}")
 
-        sb.Send_to_blockchain(name,port,data)
+        sb.Send_to_blockchain(name, port, data, password)
 
 
 def main():
@@ -102,9 +102,9 @@ def main():
 
     parser.add_argument("--path", help="path that will used to read the fingerprint. If the paths starts by unix: " +
                                        "the fingerprint will be read through a socket unix", required=True)
-    parser.add_argument("--uri", help="uri of the http server", required=True)
     parser.add_argument("--chainName", help="The name of Blockchain", required=True)
     parser.add_argument("--chainPort", help="Port used by the Blockchain", required=True)
+    parser.add_argument("--password", help="password", required=True)
     parser.add_argument("--verbose", help="increase output verbosity", action="store_true", default=False)
 
     args = parser.parse_args()
@@ -114,7 +114,7 @@ def main():
     else:
         logging.basicConfig(level=logging.ERROR)
 
-    do_run(args.path, args.uri, args.chainName, args.chainPort)
+    do_run(args.path, args.chainName, args.chainPort, args.password)
 
 
 if __name__ == "__main__":

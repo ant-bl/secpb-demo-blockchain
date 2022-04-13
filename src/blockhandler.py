@@ -1,5 +1,4 @@
 
-from bitcoinrpc.authproxy import AuthServiceProxy, JSONRPCException
 
 
 class BlockHandler():
@@ -35,7 +34,7 @@ class BlockHandler():
       for item in tx_list:
          try:
             tx_data=self.get_transaction_out_DATA(item, 1)
-            if type(item) != 'dict':  
+            if type(tx_data) != 'dict':  
                out.append(tx_data)
             
          except :
