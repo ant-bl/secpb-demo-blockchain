@@ -4,14 +4,13 @@
 import argparse
 import json
 import logging
-import os
 import socket
 import time
 from typing import Dict
 
 import asset
 import blockhandler
-import connection as connect
+import connectionNew as connect
 
 
 def do_write_fingerprint_unix(socket_path: str, js: Dict):
@@ -103,6 +102,7 @@ def main():
 
     parser.add_argument("--chain-name", help="The name of Blockchain", required=True)
     parser.add_argument("--chain-port", help="Port used by the Blockchain", required=True)
+    parser.add_argument("--password", help="password")
     parser.add_argument("--socket-path", help="socket path to reach vm dest", required=True)
     parser.add_argument("--template-path", help="template path", required=True)
     parser.add_argument("--polling-time", help="time between two polls in seconds", default=2)
@@ -116,7 +116,7 @@ def main():
         logging.basicConfig(level=logging.ERROR)
 
     print("Starting with the chain One:  \n")
-    pt_chainOne = connect.BlockchainConnect(args.chain_port, args.chain_name)
+    pt_chainOne = connect.BlockchainConnect(args.chain_port, args.chain_name, args.password)
     access_chainOne = pt_chainOne.start()
     asset_pt = asset.AssetCreate()
     handler = blockhandler.BlockHandler(access_chainOne)

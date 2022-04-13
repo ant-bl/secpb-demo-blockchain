@@ -6,9 +6,8 @@ import logging
 import os
 from pathlib import Path
 from socketserver import BaseRequestHandler, UnixStreamServer
-import to_blockchain as sb
 
-import requests
+import to_blockchain as sb
 
 
 class JSONRequestHandler(BaseRequestHandler):
@@ -78,7 +77,7 @@ def do_run_unix_server(path: Path):
             server.server_close()
 
 
-def do_run(path: str, name:str, port: str, password: str):
+def do_run(path: str, name: str, port: str, password: str):
     prefix = "unix:"
 
     if path.startswith(prefix):
@@ -86,7 +85,6 @@ def do_run(path: str, name:str, port: str, password: str):
         fn = do_run_unix_server
     else:
         fn = do_run_file
-
 
     for fingerprint in fn(path):
         data = {'fingerprint': fingerprint}
