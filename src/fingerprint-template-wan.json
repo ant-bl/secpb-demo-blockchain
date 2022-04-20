@@ -1,0 +1,14 @@
+{
+  "uuid": "",
+  "migration_type": "wan",
+  "fingerprints": {
+    "memory": {
+      "algorithm": "sha1",
+      "hash": ""
+    },
+    "disk": {
+      "algorithm": "sha1",
+      "hash": ""
+    }
+  }
+}

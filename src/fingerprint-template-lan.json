@@ -1,0 +1,10 @@
+{
+  "uuid": "",
+  "migration_type": "lan",
+  "fingerprints": {
+    "memory": {
+      "algorithm": "sha1",
+      "hash": ""
+    }
+  }
+}
