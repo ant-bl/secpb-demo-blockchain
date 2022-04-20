@@ -4,6 +4,7 @@
 
 Get info on blockchain :
 ```
+multichain-cli secpb-chain
 multichain-cli secpbChain
 getinfo
 getaddresses
@@ -99,9 +100,10 @@ Run blockchain :
 
 Run source code :
 ```
-python3 fake_src_blockchain.py --path "/home/user/Secpb/fingerprint.json" \
-        --chain-name secpbChain \
-        --chain-port 7452
+python3 fake_src_blockchain.py \
+    --path "/home/user/Secpb/fingerprint.json" \
+    --chain-name secpbChain \
+    --chain-port 7452
 ```
 
 Password is coming from `~/.multichain/secpbChain/multichain.conf`
@@ -144,7 +146,7 @@ multichain-cli secpb-chain grant 1CP1KTMtKjiUyAZoGfcK6UwrAus6BPSkyetfuH connect,
 
 Run source code :
 ```
-./fake_dst_blockchain.py --socket-path /tmp/test.json --chain-name secpb-chain --chain-port 6830 --path ./fingerprint.json
+./fake_dst_blockchain.py --socket-path /tmp/test.json --chain-name secpb-chain --chain-port 6830 --template-path ./fingerprint.json
 ``` 
 
 ## Création manuelle avec timer ##
