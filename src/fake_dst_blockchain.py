@@ -6,6 +6,7 @@ import json
 import logging
 import socket
 import time
+from pathlib import Path
 from typing import Dict
 
 import asset
@@ -44,44 +45,27 @@ def do_run(path: str, socket_path: str, data_list):
     do_write_fingerprint(socket_path, fingerprint)
 
 
-def retreive_saved_block_height():
-    try:
+class HeightStore:
 
-        file = open('height_dst.dat', 'r+')
-        height = file.read()
-        print("LInes", height)
+    def __init__(self, path: Path):
+        self._path = path
 
-        if height:
-            file.close()
-            return height
+        try:
+            self.load()
+        except FileNotFoundError:
+            self.save(0)
 
+    def load(self):
+        with self._path.open('r') as file:
+            height = file.read()
+            return int(height)
 
-        else:
-
-            file.write("0")
-            file.close()
-            return 0
-
-    except FileNotFoundError:
-        open('height_dst.dat', 'a+')
-        retreive_saved_block_height()
+    def save(self, height):
+        with self._path.open('w') as file:
+            file.write(str(height))
 
 
-def save_height(height):
-    try:
-
-        file = open('height_dst.dat', 'w+')
-        file.write(str(height))
-        file.close()
-
-
-    except FileNotFoundError:
-        file = open('height_dst.dat', 'a+')
-        file.write(height)
-        file.close()
-
-
-def send_data(data_to_send, template_path, socket_path):
+def recv_data(data_to_send, template_path, socket_path):
     for item in data_to_send:
         try:
             if isinstance(item, dict):
@@ -121,7 +105,9 @@ def main():
     asset_pt = asset.AssetCreate()
     handler = blockhandler.BlockHandler(access_chainOne)
 
-    last_height = int(retreive_saved_block_height())
+    height_store = HeightStore(Path("height.dat"))
+
+    last_height = height_store.load()
     print("Last height value", last_height)
     while True:
 
@@ -133,13 +119,13 @@ def main():
                 for i in range(last_height, (height + 1)):
                     block = handler.getBlock(access_chainOne, i)
                     data = handler.explore_block(block)
-                    send_data(data, args.template_path, args.socket_path)
+                    recv_data(data, args.template_path, args.socket_path)
                 last_height = height
 
             time.sleep(args.polling_time)
 
         finally:
-            save_height(height)
+            height_store.save(height)
 
 
 if __name__ == '__main__':

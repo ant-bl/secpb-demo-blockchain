@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
-
 import argparse
 import time
+from pathlib import Path
 
 import asset
 import blockhandler
@@ -21,31 +21,24 @@ def check_block(data_list, asset_pt, access_chain_two, adresses_chain_two):
                 print("Tx ID: ", resTXID)
 
 
-def retrieve_saved_block_height():
-    try:
-        with open('height.dat', 'r') as file:
+class HeightStore:
+
+    def __init__(self, path: Path):
+        self._path = path
+
+        try:
+            self.load()
+        except FileNotFoundError:
+            self.save(0)
+
+    def load(self):
+        with self._path.open('r') as file:
             height = file.read()
-            print("Lines", height)
+            return int(height)
 
-            if height:
-                return height
-
-            file.write("0")
-            return 0
-
-    except FileNotFoundError:
-        with open('height.dat', 'a+'):
-            pass
-        retrieve_saved_block_height()
-
-
-def save_height(height):
-    try:
-        with open('height.dat', 'w+') as file:
+    def save(self, height):
+        with self._path.open('w') as file:
             file.write(str(height))
-    except FileNotFoundError:
-        with open('height.dat', 'a+') as file:
-            file.write(height)
 
 
 def main():
@@ -79,7 +72,10 @@ def main():
     asset_pt.set_asset_params([ASSET_NAME, True, adresses_chain_two[0], QUANTITY])
 
     asset_txid_chain_two = asset_pt.asset_creation(access_chain_two)
-    last_height = int(retrieve_saved_block_height())
+
+    height_store = HeightStore(Path("height.dat"))
+
+    last_height = height_store.load()
     height = 0
 
     while True:
@@ -98,9 +94,8 @@ def main():
                 last_height = height
 
             time.sleep(2)
-
         finally:
-            save_height(height)
+            height_store.save(height)
 
 
 if __name__ == '__main__':
