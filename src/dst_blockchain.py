@@ -94,11 +94,11 @@ def do_run(chain_port, chain_name, chain_password, polling_time, template_path, 
     while True:
 
         try:
-            height = handler.retrieveBlockheight(access_chain_one)
+            height = handler.retrieve_block_height(access_chain_one)
             logging.info(f"Height: {height} Next height: {next_height}")
             if height >= next_height:
                 for i in range(next_height, (height + 1)):
-                    block = handler.getBlock(access_chain_one, i)
+                    block = handler.get_block(access_chain_one, i)
                     data = handler.explore_block(block)
                     recv_data(data, template_path, socket_path)
                 next_height = i + 1
