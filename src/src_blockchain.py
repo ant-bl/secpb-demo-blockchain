@@ -32,7 +32,7 @@ class BlockchainSender:
         pass
 
     def connect(self, password):
-        logging.info("Starting with the chain One:  \n")
+        logging.info("Connecting with the chain one:")
 
         pt_chain_one = connect.BlockchainConnect(self.blockchain_port, self.chain_name, password)
         self._access_chain_one = pt_chain_one.start()
