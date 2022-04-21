@@ -39,7 +39,7 @@ class BlockchainSender:
         self.addresses.extend(self._access_chain_one.getaddresses())
         if 1 <= len(self.addresses) <= 2:
             self.addresses.extend(self._access_chain_one.getnewaddress())
-            logging.info("First address -->", self.addresses[1])
+            logging.info(f"First address --> {' '.join(self.addresses)}")
 
         self._access_chain_one.grant(self.addresses[1], "receive,send")
 
@@ -58,9 +58,9 @@ class BlockchainSender:
         encoded_fingerprint = f"vm_dst {self.chain_name} {mem_hash} {uuid}"
         hex_fingerprint = encoded_fingerprint.encode("utf-8").hex()
 
-        logging.info("Data hex is %s", hex_fingerprint)
-        res_tx_id = self._asset_pt.sendWithData(self.addresses[1], self._access_chain_one, hex_fingerprint)
-        logging.info("Tx ID  %s", str(res_tx_id))
+        logging.info(f"Data hex is {hex_fingerprint}")
+        res_tx_id = self._asset_pt.send_with_data(self.addresses[1], self._access_chain_one, hex_fingerprint)
+        logging.info(f"Tx ID {str(res_tx_id)}")
 
 
 class JSONRequestHandler(BaseRequestHandler):
@@ -148,7 +148,7 @@ def do_run(path: str, name: str, port: str, password: str):
 
 def main():
     parser = argparse.ArgumentParser("Run a server that accepts fingerprint through unix socket and forward it to " +
-                                     "an HTPP server through a POST connection.")
+                                     "through a blockchain.")
 
     parser.add_argument("--path", help="path that will used to read the fingerprint. If the paths starts by unix: " +
                                        "the fingerprint will be read through a socket unix", required=True)
