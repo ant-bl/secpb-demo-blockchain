@@ -9,6 +9,7 @@ from socketserver import BaseRequestHandler, UnixStreamServer
 
 import asset
 import connection as connect
+import settings
 
 
 class BlockchainSender:
@@ -16,8 +17,8 @@ class BlockchainSender:
     def __init__(self, name, port, password=None):
 
         self.addresses = []
-        self.asset_name = "SECPB"
-        self.quantity = 1000000
+        self.asset_name = settings.ASSET_NAME
+        self.quantity = settings.QUANTITY
         self.blockchain_port = port
         self.chain_name = name
         self.password = password

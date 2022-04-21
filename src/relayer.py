@@ -8,10 +8,8 @@ from pathlib import Path
 import asset
 import blockhandler
 import connection as connect
+import settings
 from height_store import HeightStore
-
-ASSET_NAME = "SECPB"
-QUANTITY = 1000000
 
 
 def check_block(data_list, asset_pt, access_chain_two, addresses_chain_two):
@@ -45,7 +43,7 @@ def do_run(chain_one_name, chain_one_port, chain_one_password,
 
         access_chain_two.grant(addresses_chain_two[1], "receive,send")
 
-        asset_pt.set_asset_params([ASSET_NAME, True, addresses_chain_two[0], QUANTITY])
+        asset_pt.set_asset_params([settings.ASSET_NAME, True, addresses_chain_two[0], settings.QUANTITY])
 
         asset_tx_id_chain_two = asset_pt.asset_creation(access_chain_two)
 
