@@ -8,6 +8,7 @@ from pathlib import Path
 import asset
 import blockhandler
 import connection as connect
+from height_store import HeightStore
 
 ASSET_NAME = "SECPB"
 QUANTITY = 1000000
@@ -23,26 +24,6 @@ def check_block(data_list, asset_pt, access_chain_two, addresses_chain_two):
             if type(item) != 'dict':
                 res_tx_id = asset_pt.send_with_data(addresses_chain_two[1], access_chain_two, item)
                 logging.info(f"Tx ID: {res_tx_id}")
-
-
-class HeightStore:
-
-    def __init__(self, path: Path):
-        self._path = path
-
-        try:
-            self.load()
-        except FileNotFoundError:
-            self.save(0)
-
-    def load(self):
-        with self._path.open('r') as file:
-            height = file.read()
-            return int(height)
-
-    def save(self, height):
-        with self._path.open('w') as file:
-            file.write(str(height))
 
 
 def do_run(chain_one_name, chain_one_port, chain_one_password,

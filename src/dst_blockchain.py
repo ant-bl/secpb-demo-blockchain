@@ -12,6 +12,7 @@ from typing import Dict
 import asset
 import blockhandler
 import connection as connect
+from height_store import HeightStore
 
 
 def do_write_fingerprint_unix(socket_path: str, js: Dict):
@@ -43,26 +44,6 @@ def do_recv(path: str, socket_path: str, data_list):
     fingerprint["uuid"] = data_list[3]
 
     do_write_fingerprint(socket_path, fingerprint)
-
-
-class HeightStore:
-
-    def __init__(self, path: Path):
-        self._path = path
-
-        try:
-            self.load()
-        except FileNotFoundError:
-            self.save(0)
-
-    def load(self):
-        with self._path.open('r') as file:
-            height = file.read()
-            return int(height)
-
-    def save(self, height):
-        with self._path.open('w') as file:
-            file.write(str(height))
 
 
 def recv_data(data_to_send, template_path, socket_path):
