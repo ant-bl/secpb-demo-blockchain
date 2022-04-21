@@ -1,4 +1,4 @@
-# !/bin/bash
+#!/usr/bin/env bash
 
 green=`tput setaf 2`
 reset=`tput sgr0`
