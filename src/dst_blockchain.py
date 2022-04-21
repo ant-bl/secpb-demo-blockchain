@@ -107,20 +107,34 @@ def main():
 
     height_store = HeightStore(Path("height.dat"))
 
-    last_height = height_store.load()
-    print("Last height value", last_height)
+    next_height = height_store.load()
+    print("Next height value", next_height)
     while True:
 
         try:
             height = handler.retrieveBlockheight(access_chainOne)
             # print(" Block  height retrieved !")
-            print("Height: ", height, "Last height: ", last_height)
-            if height > last_height:
-                for i in range(last_height, (height + 1)):
+            print("Height: ", height, "Next height: ", next_height)
+            if height >= next_height: # TODO pas sur height.data devrait etere init a 1 non sauf si hieght êute tre egal a 0 la 1ere fois: faudrait tester :/ ?
+
+                print(f"range({next_height}, ({height + 1}))")
+
+                for i in range(next_height, (height + 1)):
+                    print(f"    i={i}")
+
                     block = handler.getBlock(access_chainOne, i)
+
+                    print(f"    block={block}")
+
                     data = handler.explore_block(block)
+
+                    print(f"    data={data}")
+
                     recv_data(data, args.template_path, args.socket_path)
-                last_height = height
+
+                next_height = i + 1
+
+                print(f"end of range next_height={next_height}")
 
             time.sleep(args.polling_time)
 
