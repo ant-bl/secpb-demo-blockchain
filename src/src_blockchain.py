@@ -10,51 +10,57 @@ from socketserver import BaseRequestHandler, UnixStreamServer
 import asset
 import connectionNew as connect
 
-connect
 
+class BlockchainSender:
 
-class Send_to_blockchain():
+    def __init__(self, name, port, password=None):
 
-    def __init__(self, name, port, data, password=None):
+        self.addresses = []
+        self.asset_name = "SECPB"
+        self.quantity = 1000000
+        self.blockchain_port = port
+        self.chain_name = name
+        self.password = password
+        self._asset_pt = None
+        self._access_chain_one = None
 
-        self.Adresses = []
-        self.ASSET_NAME = "SECPB"
-        self.QUANTITY = 1000000
-        self.blockchainPort = port
-        self.chainName = name
-        self.data = data
-        self.connect(password)
+    def __enter__(self):
+        self.connect(self.password)
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        pass
 
     def connect(self, password):
-        asset_pt = asset.AssetCreate()
-        print("Starting with the chain One:  \n")
-        pt_chainOne = connect.BlockchainConnect(self.blockchainPort, self.chainName, password)
-        access_chainOne = pt_chainOne.start()
-        self.Adresses.extend(access_chainOne.getaddresses())
-        if len(self.Adresses) >= 1 and len(self.Adresses) <= 2:
-            self.Adresses.extend(access_chainOne.getnewaddress())
-            print("First address -->", self.Adresses[1])
+        logging.info("Starting with the chain One:  \n")
 
-        access_chainOne.grant(self.Adresses[1], "receive,send")
-        asset_pt.set_asset_params([self.ASSET_NAME, True, self.Adresses[0], self.QUANTITY])
+        pt_chain_one = connect.BlockchainConnect(self.blockchain_port, self.chain_name, password)
+        self._access_chain_one = pt_chain_one.start()
+        self.addresses.extend(self._access_chain_one.getaddresses())
+        if 1 <= len(self.addresses) <= 2:
+            self.addresses.extend(self._access_chain_one.getnewaddress())
+            logging.info("First address -->", self.addresses[1])
+
+        self._access_chain_one.grant(self.addresses[1], "receive,send")
+
+        self._asset_pt = asset.AssetCreate()
+        self._asset_pt.set_asset_params([self.asset_name, True, self.addresses[0], self.quantity])
 
         try:
-            assetTXID = asset_pt.asset_creation(access_chainOne)
-        except:
-            print("Asset existing !")
+            asset_tx_id = self._asset_pt.asset_creation(self._access_chain_one)
+        except Exception:
+            logging.info("Asset existing !")
 
-        self.send(asset_pt, access_chainOne)
+    def send(self, fingerprint):
 
-    def send(self, asset, access):
-        tmp = "vm_dst" + " " + self.chainName + " " + self.data["fingerprint"]["fingerprints"]["memory"]["hash"] + " " + \
-              self.data["fingerprint"]["uuid"]
+        mem_hash = fingerprint["fingerprint"]["fingerprints"]["memory"]["hash"]
+        uuid = fingerprint["fingerprint"]["uuid"]
+        encoded_fingerprint = f"vm_dst {self.chain_name} {mem_hash} {uuid}"
+        hex_fingerprint = encoded_fingerprint.encode("utf-8").hex()
 
-        data_hex = tmp.encode("utf-8").hex()
-        print("Data hex is", data_hex)
-        resTXID = asset.sendWithData(self.Adresses[1], access, data_hex)
-        print("Tx ID", resTXID)
-
-        # self.do_run(resTXID, "127.0.0.1:9008")
+        logging.info("Data hex is %s", hex_fingerprint)
+        res_tx_id = self._asset_pt.sendWithData(self.addresses[1], self._access_chain_one, hex_fingerprint)
+        logging.info("Tx ID  %s", str(res_tx_id))
 
 
 class JSONRequestHandler(BaseRequestHandler):
@@ -133,12 +139,11 @@ def do_run(path: str, name: str, port: str, password: str):
     else:
         fn = do_run_file
 
-    for fingerprint in fn(path):
-        data = {'fingerprint': fingerprint}
-
-        logging.info(f"get fingerprint : {fingerprint}")
-
-        Send_to_blockchain(name, port, data, password)
+    with BlockchainSender(name, port, password) as sender:
+        for fingerprint in fn(path):
+            data = {'fingerprint': fingerprint}
+            logging.info(f"get fingerprint : {fingerprint}")
+            sender.send(data)
 
 
 def main():
