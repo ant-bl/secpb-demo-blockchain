@@ -5,13 +5,13 @@ from multichaincli import Multichain
 
 class BlockchainConnect(object):
 
-    def __init__(self, port, chainName, password):
+    def __init__(self, port, chain_name, password):
         self.id = "multichainrpc"
-        self.name = chainName
+        self.name = chain_name
         self.host = "127.0.0.1"
         self.port = port
         self.http = "http://"
-        self.id_path = os.environ['HOME'] + "/.multichain/" + chainName + "/multichain.conf"
+        self.id_path = os.environ['HOME'] + "/.multichain/" + chain_name + "/multichain.conf"
         self.password = password
 
     def start(self):
