@@ -20,7 +20,7 @@ The SECPB repo is composed by:
 --fake_dst_vm_2.py : Used to start an HTTP server in order to receive  transaction ID
 --send_data.py : Used to send a hash in a blockchain
 --receive_data: Used for getting a hash from a Blcockhain
---relayer: Used to retrieve an hash from a blockchain and send to another.
+--relayer: Used to retrieve a hash from a blockchain and send to another.
 
 
 
