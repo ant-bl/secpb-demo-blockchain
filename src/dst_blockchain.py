@@ -109,7 +109,7 @@ def do_run(chain_port, chain_name, chain_password, polling_time, template_path, 
 
 def main():
     parser = argparse.ArgumentParser("Run a server that accepts fingerprint through unix socket and forward it to " +
-                                     "an HTPP server through a POST connection.")
+                                     "through a blockchain.")
 
     parser.add_argument("--chain-name", help="The name of Blockchain", required=True)
     parser.add_argument("--chain-port", help="Port used by the Blockchain", required=True)
