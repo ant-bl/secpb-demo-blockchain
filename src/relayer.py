@@ -13,7 +13,7 @@ ASSET_NAME = "SECPB"
 QUANTITY = 1000000
 
 
-def check_block(data_list, asset_pt, access_chain_two, adresses_chain_two):
+def check_block(data_list, asset_pt, access_chain_two, addresses_chain_two):
     logging.info("check_block:")
 
     if data_list:
@@ -21,7 +21,7 @@ def check_block(data_list, asset_pt, access_chain_two, adresses_chain_two):
             logging.info(f"item: {item}, type(item): {type(item)}")
 
             if type(item) != 'dict':
-                res_tx_id = asset_pt.sendWithData(adresses_chain_two[1], access_chain_two, item)
+                res_tx_id = asset_pt.send_with_data(addresses_chain_two[1], access_chain_two, item)
                 logging.info(f"Tx ID: {res_tx_id}")
 
 
@@ -66,20 +66,20 @@ def do_run(chain_one_name, chain_one_port, chain_one_password,
 
         asset_pt.set_asset_params([ASSET_NAME, True, addresses_chain_two[0], QUANTITY])
 
-        asset_txid_chain_two = asset_pt.asset_creation(access_chain_two)
+        asset_tx_id_chain_two = asset_pt.asset_creation(access_chain_two)
 
     height_store = HeightStore(Path("height.dat"))
 
     height = 0
     next_height = height_store.load()
 
-    logging.info("next_height", next_height)
+    logging.info(f"next_height: {next_height}")
 
     while True:
 
         try:
             height = handler.retrieve_block_height(access_chain_one)
-            logging.info("Height: ", height, "Next height: ", next_height)
+            logging.info(f"Height: {height}, Next height: {next_height}")
             if height >= next_height:
 
                 logging.info(f"range({next_height}, ({height + 1}))")
@@ -101,7 +101,7 @@ def do_run(chain_one_name, chain_one_port, chain_one_password,
 
 
 def main():
-    parser = argparse.ArgumentParser("Run a relayer.")
+    parser = argparse.ArgumentParser("Run a relay.")
 
     parser.add_argument("--chain-one-name", help="The name of the first Blockchain", required=True)
     parser.add_argument("--chain-one-port", help="Port used by the first Blockchain", type=int, required=True)
