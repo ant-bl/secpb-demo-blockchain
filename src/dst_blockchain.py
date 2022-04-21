@@ -11,7 +11,7 @@ from typing import Dict
 
 import asset
 import blockhandler
-import connectionNew as connect
+import connection as connect
 
 
 def do_write_fingerprint_unix(socket_path: str, js: Dict):

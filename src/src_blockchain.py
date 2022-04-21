@@ -8,7 +8,7 @@ from pathlib import Path
 from socketserver import BaseRequestHandler, UnixStreamServer
 
 import asset
-import connectionNew as connect
+import connection as connect
 
 
 class BlockchainSender:

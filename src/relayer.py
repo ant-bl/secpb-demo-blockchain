@@ -7,7 +7,7 @@ from pathlib import Path
 
 import asset
 import blockhandler
-import connectionNew as connect
+import connection as connect
 
 ASSET_NAME = "SECPB"
 QUANTITY = 1000000
