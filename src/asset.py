@@ -14,7 +14,7 @@ class AssetCreate:
         asset_params = {"name": self.name, "open": self.open}
         try:
             transaction_id = access.issue(self.address, asset_params, self.qty, self.min_amount)
-            logging.info(f"Transaction Id: {transaction_id}")
+            logging.debug(f"Transaction Id: {transaction_id}")
             return transaction_id
         except Exception:
             logging.error(f"asset already exists")

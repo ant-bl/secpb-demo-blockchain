@@ -54,7 +54,7 @@ def recv_data(data_to_send, template_path, socket_path):
             else:
                 decoded = bytes.fromhex(item).decode('utf-8')
                 data_list = decoded.split(" ")
-                logging.info(f"Received data {data_list}")
+                logging.debug(f"Received data {data_list}")
                 if data_list[0] == "vm_dst":
                     do_recv(template_path, socket_path, data_list)
         except UnicodeDecodeError:
@@ -71,12 +71,12 @@ def do_run(chain_port, chain_name, chain_password, polling_time, template_path, 
     height_store = HeightStore(Path("height.dat"))
 
     next_height = height_store.load()
-    logging.info(f"Next height value: {next_height}")
+    logging.debug(f"Next height value: {next_height}")
     while True:
 
         try:
             height = handler.retrieve_block_height(access_chain_one)
-            logging.info(f"Height: {height} Next height: {next_height}")
+            logging.debug(f"Height: {height} Next height: {next_height}")
             if height >= next_height:
                 for i in range(next_height, (height + 1)):
                     block = handler.get_block(access_chain_one, i)
@@ -99,13 +99,21 @@ def main():
     parser.add_argument("--template-path", help="template path", required=True)
     parser.add_argument("--polling-time", help="time between two polls in seconds", default=2)
     parser.add_argument("--verbose", help="increase output verbosity", action="store_true", default=False)
+    parser.add_argument("--debug", help="set debug print", action="store_true", default=False)
+    parser.add_argument("-dme", "--disable-multichain-cli-errors", action="store_true", default=False)
 
     args = parser.parse_args()
 
-    if args.verbose:
+    if args.debug:
+        logging.basicConfig(level=logging.DEBUG)
+    elif args.verbose:
         logging.basicConfig(level=logging.INFO)
     else:
         logging.basicConfig(level=logging.ERROR)
+
+    if args.disable_multichaincli_errors:
+        logger = logging.getLogger("multichaincli.client")
+        logger.setLevel(logging.FATAL)
 
     do_run(args.chain_port, args.chain_name, args.chain_password,
            args.polling_time, args.template_path, args.socket_path)

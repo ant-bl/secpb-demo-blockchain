@@ -40,7 +40,7 @@ class BlockchainSender:
         self.addresses.extend(self._access_chain_one.getaddresses())
         if 1 <= len(self.addresses) <= 2:
             self.addresses.extend(self._access_chain_one.getnewaddress())
-            logging.info(f"First address --> {' '.join(self.addresses)}")
+            logging.debug(f"First address --> {' '.join(self.addresses)}")
 
         self._access_chain_one.grant(self.addresses[1], "receive,send")
 
@@ -59,9 +59,9 @@ class BlockchainSender:
         encoded_fingerprint = f"vm_dst {self.chain_name} {mem_hash} {uuid}"
         hex_fingerprint = encoded_fingerprint.encode("utf-8").hex()
 
-        logging.info(f"Data hex is {hex_fingerprint}")
+        logging.debug(f"Data hex is {hex_fingerprint}")
         res_tx_id = self._asset_pt.send_with_data(self.addresses[1], self._access_chain_one, hex_fingerprint)
-        logging.info(f"Tx ID {str(res_tx_id)}")
+        logging.debug(f"Tx ID {str(res_tx_id)}")
 
 
 class JSONRequestHandler(BaseRequestHandler):
@@ -157,13 +157,21 @@ def main():
     parser.add_argument("--chain-port", help="Port used by the Blockchain", required=True)
     parser.add_argument("--password", help="password")
     parser.add_argument("--verbose", help="increase output verbosity", action="store_true", default=False)
+    parser.add_argument("--debug", help="set debug print", action="store_true", default=False)
+    parser.add_argument("-dme", "--disable-multichain-cli-errors", action="store_true", default=False)
 
     args = parser.parse_args()
 
-    if args.verbose:
+    if args.debug:
+        logging.basicConfig(level=logging.DEBUG)
+    elif args.verbose:
         logging.basicConfig(level=logging.INFO)
     else:
         logging.basicConfig(level=logging.ERROR)
+
+    if args.disable_multichaincli_errors:
+        logger = logging.getLogger("multichaincli.client")
+        logger.setLevel(logging.FATAL)
 
     do_run(args.path, args.chain_name, args.chain_port, args.password)
 
