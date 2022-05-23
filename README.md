@@ -168,8 +168,6 @@ cat /home/user/.multichain/secpb-chain/params.dat | grep target-block-time
 target-block-time = 2                  # Target time between blocks (transaction confirmation delay), seconds. (2 - 86400)
 ```
 
-Update all sleep in code. TODO
-
 Run as daemon :
 ```
 multichaind secpbChain -daemon
